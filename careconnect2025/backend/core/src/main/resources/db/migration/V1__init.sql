@@ -63,7 +63,8 @@ CREATE TABLE plan (
   code VARCHAR(50) NOT NULL UNIQUE,
   name VARCHAR(100) NOT NULL,
   price_cents INT NOT NULL CHECK(price_cents >= 0),
-  billing_period VARCHAR(20) DEFAULT 'MONTH'
+  billing_period VARCHAR(20) DEFAULT 'MONTH',
+  is_active BOOLEAN NOT NULL DEFAULT 1
 );
 
 CREATE TABLE subscription (

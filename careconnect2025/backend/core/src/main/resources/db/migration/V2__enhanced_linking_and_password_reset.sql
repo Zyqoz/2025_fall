@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS password_reset_token (
   used        BOOLEAN     DEFAULT FALSE,
   created_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  INDEX idx_password_reset_token (token_hash)
+  INDEX idx_password_reset_token (token_hash),
+  INDEX idx_password_reset_token_expires (expires_at)
 );
 
 -- =====================================================

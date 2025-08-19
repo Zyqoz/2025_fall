@@ -17,4 +17,3 @@ CREATE TABLE vital_sample (
 -- Create indexes for better query performance
 CREATE INDEX idx_vital_sample_patient_timestamp ON vital_sample(patient_id, timestamp);
 CREATE INDEX idx_vital_sample_timestamp ON vital_sample(timestamp);
-

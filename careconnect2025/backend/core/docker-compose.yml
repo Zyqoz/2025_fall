@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    command: --log-bin-trust-function-creators=1
+    environment:
+      MYSQL_DATABASE: 
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  flyway:
+    image: flyway/flyway:11
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql:ro
+    command: -connectRetries=60 -outOfOrder=true -validateOnMigrate=false migrate
+
+  backend:
+    build: .
+    image: careconnect-backend:local
+    depends_on:
+      - db
+      - flyway
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      JDBC_URI: ${JDBC_URI}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SECURITY_JWT_SECRET: ${SECURITY_JWT_SECRET}
+    volumes:
+      - ./firebase-service-account.json:/app/src/main/resources/firebase-service-account.json:ro
+    restart: unless-stopped
+
+volumes:
+  db_data: {}
