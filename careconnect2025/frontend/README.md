@@ -1,4 +1,4 @@
-# CareConnect App
+# CareConnect Application
 
 CareConnect is a full-stack healthcare application designed to streamline communication and coordination between caregivers and patients.
 It includes a **Flutter frontend** and a **Spring Boot backend**, supporting authentication, gamification, secure messaging, social networking, and more.
