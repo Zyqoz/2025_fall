@@ -1,0 +1,59 @@
+```json
+{
+  "provider_biller": {
+    "name": "SSM Health St. Joseph Hospital - St. Charles",
+    "address": "PO BOX 776236, CHICAGO IL 60677-2007",
+    "phone": "888-918-3512"
+  },
+  "patient_care_recipient": {
+    "name": "Cupidredthree R Zztest",
+    "address": "123 Cupid St, Oklahoma City, OK 23548",
+    "account_number": "22232140002"
+  },
+  "date_of_service": "08/02/2023",
+  "services_provided": [
+    "Cardiology - Stress Test",
+    "Cardiology - Echocardiology",
+    "Pharmacy Drugs Requiring Detailed Coding"
+  ],
+  "date_billed": "09/23/2024",
+  "due_date": "10/14/2024",
+  "payment_status": "Pending",
+  "direct_provider_link_indicator": true,
+  "third_party_indicator": false,
+  "patient_checking_account_indicator": false,
+  "other_indicator": {
+    "rejected_by_insurance": false
+  },
+  "billed_to_insurance_indicator": false,
+  "copay_indicator": {
+    "status": "Not specified"
+  },
+  "amount": {
+    "total": 7353.60,
+    "breakdown": [
+      {
+        "service": "Cardiology - Stress Test",
+        "charge": 1881.00
+      },
+      {
+        "service": "Cardiology - Echocardiology",
+        "charge": 5400.00
+      },
+      {
+        "service": "Pharmacy Drugs Requiring Detailed Coding",
+        "charge": 72.60
+      }
+    ]
+  },
+  "payment_link_indicator": true,
+  "qr_code_indicator": true,
+  "additional_notes": {
+    "financial_assistance_available": true,
+    "payment_plan_available": true,
+    "discount_available": true,
+    "discount_expiry": "10/14/2024",
+    "mychart_activation_code": "MSKQ4-WC3KD-9BV6X"
+  }
+}
+```
