@@ -5,10 +5,10 @@ services:
     image: mysql:8.0
     command: --log-bin-trust-function-creators=1
     environment:
-      MYSQL_DATABASE: 
-      MYSQL_ROOT_PASSWORD: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: 
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     ports:
@@ -47,11 +47,11 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
-      FIREBASE_PROJECT_ID: 
-      FIREBASE_SENDER_ID: 
-      FLYWAY_URL: ${JDBC_URI}
-      FLYWAY_USER: 
-      FLYWAY_PASSWORD: 
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_SENDER_ID: ${FIREBASE_SENDER_ID}
+      FLYWAY_URL: ${FLYWAY_URL}
+      FLYWAY_USER: ${FLYWAY_USER}
+      FLYWAY_PASSWORD: ${FLYWAY_PASSWORD}
       STRIPE_API_KEY:
       STRIPE_SECRET_KEY:
       STRIPE_WEBHOOK_SIGNING_SECRET:
