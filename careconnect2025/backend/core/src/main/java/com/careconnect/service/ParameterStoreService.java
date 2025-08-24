@@ -38,7 +38,7 @@ public class ParameterStoreService {
             return response.parameter().value();
         } catch (SsmException e) {
             logger.error("Error retrieving parameter {}: ", e.getMessage());
-            logger.info("We are returning your initial parameter name");
+            logger.info("We are returning your initial parameter name: {}", parameterName);
             return parameterName;
         }
     }
