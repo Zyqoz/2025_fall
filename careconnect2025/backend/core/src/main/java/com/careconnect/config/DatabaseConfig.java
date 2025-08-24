@@ -44,15 +44,29 @@ public class DatabaseConfig {
     @DependsOn("ssmClient")
     @Primary
     public DataSourceProperties dataSourceProperties() {
+
         DataSourceProperties properties = new DataSourceProperties();
-        String url = parameterService.getSecureParameter(jdbcUrl);
-        String username = parameterService.getSecureParameter(userParameter);
-        String password = parameterService.getSecureParameter(passwordParameter);
-
-        properties.setUrl(url);
-        properties.setUsername(username);
-        properties.setPassword(password);
-
+        if(jdbcUrl.isEmpty()) {
+            String url = parameterService.getSecureParameter(jdbcUrl);
+            properties.setUrl(url);
+        }
+        else {
+            properties.setUrl(jdbcUrl);
+        }
+        if(userParameter.isEmpty()) {
+            String username = parameterService.getSecureParameter(userParameter);
+            properties.setUsername(username);
+        }
+        else {
+            properties.setUsername(userParameter);
+        }
+        if(passwordParameter.isEmpty()) {
+            String password = parameterService.getSecureParameter(passwordParameter);
+            properties.setPassword(password);
+        }
+        else {
+            properties.setPassword(passwordParameter);
+        }
         return properties;
     }
 

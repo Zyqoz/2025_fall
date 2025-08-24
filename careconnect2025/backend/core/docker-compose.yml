@@ -47,6 +47,18 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
+      FIREBASE_PROJECT_ID: 
+      FIREBASE_SENDER_ID: 
+      FLYWAY_URL: ${JDBC_URI}
+      FLYWAY_USER: 
+      FLYWAY_PASSWORD: 
+      STRIPE_API_KEY:
+      STRIPE_SECRET_KEY:
+      STRIPE_WEBHOOK_SIGNING_SECRET:
+      SENDGRID_API_KEY: key-placeholder
+      OPENAI_API_KEY: key-placeholder
+      GOOGLE_CLIENT_ID: client-id-placeholder
+      GOOGLE_CLIENT_SECRET: client-secret-placeholder
     volumes:
       - ./firebase-service-account.json:/app/src/main/resources/firebase-service-account.json:ro
     restart: unless-stopped
