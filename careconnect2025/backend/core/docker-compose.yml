@@ -63,5 +63,23 @@ services:
       - ./firebase-service-account.json:/app/src/main/resources/firebase-service-account.json:ro
     restart: unless-stopped
 
+  frontend: 
+    build: ../../frontend
+    image: careconnect-frontend:local
+    ports: 
+      - "3000:3000"
+    env_file: 
+      - .env
+    environment:
+      CC_BASE_URL_WEB: http://localhost:8080
+      CC_BASE_URL_ANDROID: http://10.0.2.2:8080
+      CC_BASE_URL_OTHER: http://localhost:8080
+      OPENAI_API_KEY: key-placeholder
+      DEEPSEEK_API_KEY: key-placeholder
+      deepSeek_url: https://api.deepseek.com/v1/chat/completions
+      JWT_SECRET: ${SECURITY_JWT_SECRET}
+      CC_BACKEND_TOKEN: your_backend_token_here
+      restart: unless-stopped
+
 volumes:
   db_data: {}
