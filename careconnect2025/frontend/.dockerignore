@@ -1,0 +1,28 @@
+# Flutter/Dart artifacts
+build/
+.dart_tool/
+.packages
+.pub/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Git
+.git
+
+# Flutter ephemeral plugin symlinks
+linux/flutter/ephemeral/
+
+# Other artifacts
+**/build/
+artifacts/
+Android/
+android/
+/.gradle
+/.idea
+/ios/Flutter/ephemeral
+pubspec.lock
