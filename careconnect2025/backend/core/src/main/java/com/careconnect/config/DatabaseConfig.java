@@ -1,10 +1,10 @@
 package com.careconnect.config;
 
-
 import com.careconnect.service.ParameterStoreService;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -17,6 +17,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import javax.sql.DataSource;
 
 @Configuration
+@ConditionalOnProperty(name = "careconnect.aws.enabled", havingValue = "true", matchIfMissing = false)
 public class DatabaseConfig {
 
     @Value("${careconnect.db.url}")
@@ -68,5 +69,4 @@ public class DatabaseConfig {
 
         return dataSource;
     }
-
 }

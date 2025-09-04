@@ -10,6 +10,7 @@ import com.careconnect.dto.CaregiverPatientLinkResponse;
 import com.careconnect.exception.RegistrationException;
 import com.careconnect.exception.AppException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,9 @@ public class CaregiverService {
     
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    
+    @Value("${careconnect.stripe.enabled:true}")
+    private boolean stripeEnabled;
     
     // public List<Patient> getPatientsByCaregiver(Long caregiverId, String email, String name) {
     //     // Get caregiver user
@@ -273,22 +277,25 @@ public Patient registerPatient(PatientRegistration reg) {
         if (users.existsByEmail(reg.getCredentials().getEmail()))
             throw new RegistrationException("Email already registered");
             
-        // Create Stripe customer first
-        String fullName = reg.getFirstName() + " " + reg.getLastName();
-        Map<String, Object> customerResult;
-        
-        try {
-            customerResult = stripeService.createCustomer(fullName, reg.getCredentials().getEmail());
-        } catch (Exception e) {
-            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Failed to create Stripe customer: " + e.getMessage());
-        }
-        
-        // Extract customer ID
-        String stripeCustomerId = (String) customerResult.get("id");
-        if (stripeCustomerId == null) {
-            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Invalid response from Stripe customer creation");
+        // Create Stripe customer if enabled
+        String stripeCustomerId = null;
+        if (stripeEnabled) {
+            String fullName = reg.getFirstName() + " " + reg.getLastName();
+            Map<String, Object> customerResult;
+            
+            try {
+                customerResult = stripeService.createCustomer(fullName, reg.getCredentials().getEmail());
+            } catch (Exception e) {
+                throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to create Stripe customer: " + e.getMessage());
+            }
+            
+            // Extract customer ID
+            stripeCustomerId = (String) customerResult.get("id");
+            if (stripeCustomerId == null) {
+                throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Invalid response from Stripe customer creation");
+            }
         }
 
         User user = new User();
@@ -330,35 +337,37 @@ public Patient registerPatient(PatientRegistration reg) {
         try {
             Caregiver savedCaregiver = caregiverRepository.save(cg);
             
-            // If plan ID is provided, create subscription
-            if (reg.getPlanId() != null) {
+            // If plan ID is provided and Stripe is enabled, create subscription
+            if (reg.getPlanId() != null && stripeEnabled) {
                 // Get the plan from database - convert String to Long
                 Plan plan = planRepository.findById(Long.parseLong(reg.getPlanId()))
                     .orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Invalid plan selected"));
                 
-                // Create subscription
-                try {
-                    Map<String, Object> subscriptionResult = stripeService.createSubscription(
-                        stripeCustomerId, plan.getCode() // using plan.code as the Stripe price ID
-                    );
-                    
-                    // Save subscription information to database
-                    if (subscriptionResult != null && subscriptionResult.get("id") != null) {
-                        Subscription subscription = new Subscription();
-                        subscription.setStripeSubscriptionId((String) subscriptionResult.get("id"));
-                        subscription.setStripeCustomerId(stripeCustomerId);
-                        subscription.setUser(user);
-                        subscription.setPlan(plan);
-                        subscription.setStatus("active");
-                        subscription.setStartedAt(java.time.Instant.now());
-                        subscription.setCurrentPeriodEnd(java.time.Instant.now().plusSeconds(2592000)); // 30 days
-                        // Add additional fields as needed
-                        subscriptionRepository.save(subscription);
+                // Create subscription only if stripeCustomerId is available
+                if (stripeCustomerId != null) {
+                    try {
+                        Map<String, Object> subscriptionResult = stripeService.createSubscription(
+                            stripeCustomerId, plan.getCode() // using plan.code as the Stripe price ID
+                        );
+                        
+                        // Save subscription information to database
+                        if (subscriptionResult != null && subscriptionResult.get("id") != null) {
+                            Subscription subscription = new Subscription();
+                            subscription.setStripeSubscriptionId((String) subscriptionResult.get("id"));
+                            subscription.setStripeCustomerId(stripeCustomerId);
+                            subscription.setUser(user);
+                            subscription.setPlan(plan);
+                            subscription.setStatus("active");
+                            subscription.setStartedAt(java.time.Instant.now());
+                            subscription.setCurrentPeriodEnd(java.time.Instant.now().plusSeconds(2592000)); // 30 days
+                            // Add additional fields as needed
+                            subscriptionRepository.save(subscription);
+                        }
+                    } catch (Exception e) {
+                        // Log the error but continue with registration
+                        System.err.println("Failed to create subscription: " + e.getMessage());
+                        // You could rollback the customer creation in Stripe here if needed
                     }
-                } catch (Exception e) {
-                    // Log the error but continue with registration
-                    System.err.println("Failed to create subscription: " + e.getMessage());
-                    // You could rollback the customer creation in Stripe here if needed
                 }
             }
             

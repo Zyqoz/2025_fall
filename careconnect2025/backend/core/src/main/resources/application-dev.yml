@@ -1,0 +1,217 @@
+# Development Profile Configuration
+# This file provides safe defaults and mocked values for local development
+# Use with: ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+
+spring:
+  application:
+    name: careconnect-backend-dev
+  
+  # Banner and logging
+  main:
+    banner-mode: off
+  
+  # Database Configuration - H2 in-memory for development
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 10000
+      leak-detection-threshold: 60000
+  
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 25
+          time_zone: UTC
+          batch_versioned_data: true
+        connection:
+          provider_disables_autocommit: true
+        query:
+          plan_cache_max_size: 2048
+          plan_parameter_metadata_max_size: 128
+        temp:
+          use_jdbc_metadata_defaults: false
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # H2 Console for database inspection
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  
+  # Flyway disabled for development
+  flyway:
+    enabled: false
+  
+  # SQL initialization
+  sql:
+    init:
+      mode: never
+  
+  # Multipart file upload
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  
+  # Security configuration
+  security:
+    user:
+      name: dev
+      password: dev123
+      roles: ADMIN,USER
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: mocked-google-client-id
+            client-secret: mocked-google-client-secret
+            scope: openid,email,profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            client-name: Google
+          fitbit:
+            client-id: mocked-fitbit-client-id
+            client-secret: mocked-fitbit-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/fitbit"
+            scope: activity,heartrate,sleep,weight,profile
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+          fitbit:
+            authorization-uri: https://www.fitbit.com/oauth2/authorize
+            token-uri: https://api.fitbit.com/oauth2/token
+            user-info-uri: https://api.fitbit.com/1/user/-/profile.json
+  
+  # Mail configuration - console mode
+  mail:
+    host: localhost
+    port: 1025
+    username: dev@careconnect.local
+    password: dev123
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# CareConnect specific configuration
+careconnect:
+  # Database configuration
+  db:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+  
+  # AWS services disabled for local development
+  aws:
+    enabled: false
+  
+  # Email configuration
+  email:
+    provider: console
+    from: dev@careconnect.local
+  
+  # Base URL for local development
+  baseurl: http://localhost:8080
+  
+  # CORS allowed origins
+  cors_allowed: http://localhost:3000,http://localhost:50030,http://localhost:8000
+  
+  # Upload directory
+  upload:
+    dir: ${user.home}/Documents/careconnect-uploads
+  
+  # Frontend base URL
+  frontend:
+    base-url: http://localhost:3000
+
+# Security and JWT configuration
+security:
+  jwt:
+    secret: 49mXP8wBsMcK+DP0xp6VdwdC1qISTsk9+CFYKiKBl18=
+jwt:
+  expiration:
+    ms: 10800000
+
+# Stripe configuration (mocked values)
+stripe:
+  secret-key: sk_test_mocked_stripe_secret_key_for_development
+  webhook-secret: whsec_mocked_webhook_secret_for_development
+
+# OpenAI configuration (mocked values)
+openai:
+  api-key: sk-mocked-openai-api-key-for-development
+
+# Firebase configuration (mocked values)
+firebase:
+  project-id: careconnect-dev-mock
+  service-account-key: firebase-service-account-mock.json
+  sender-id: 123456789
+
+# Logging configuration
+logging:
+  level:
+    root: ERROR
+    com.careconnect: INFO
+    org.springframework.boot: WARN
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %logger{0} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management endpoints
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+# OpenAPI/Swagger configuration
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    filter: true
+    disable-swagger-default-url: true

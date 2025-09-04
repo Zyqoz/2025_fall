@@ -26,7 +26,7 @@ public class Vital {
     @Column(name = "vital_type", nullable = false)
     private String vitalType; // BLOOD_PRESSURE, HEART_RATE, TEMPERATURE, etc.
     
-    @Column(name = "value", nullable = false)
+    @Column(name = "vital_value", nullable = false)
     private String value; // Store as string to handle different formats (e.g., "120/80", "98.6", "72")
     
     @Column(name = "unit")

@@ -8,8 +8,8 @@ import com.careconnect.model.User;
 import com.careconnect.repository.UserFileRepository;
 import com.careconnect.repository.PatientRepository;
 import com.careconnect.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class FileManagementService {
@@ -30,7 +29,19 @@ public class FileManagementService {
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
     private final DatabaseStorageService databaseStorageService;
-    private final S3StorageService s3StorageService;
+    
+    @Autowired(required = false)
+    private S3StorageService s3StorageService;
+    
+    public FileManagementService(UserFileRepository userFileRepository, 
+                               UserRepository userRepository,
+                               PatientRepository patientRepository, 
+                               DatabaseStorageService databaseStorageService) {
+        this.userFileRepository = userFileRepository;
+        this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
+        this.databaseStorageService = databaseStorageService;
+    }
     
     @Value("${app.file.storage.default:database}")
     private String defaultStorageType;

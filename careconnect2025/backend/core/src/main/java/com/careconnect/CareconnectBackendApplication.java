@@ -2,6 +2,7 @@ package com.careconnect;
 
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -12,7 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class CareconnectBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CareconnectBackendApplication.class, args);
-
+		SpringApplication app = new SpringApplication(CareconnectBackendApplication.class);
+		app.setWebApplicationType(WebApplicationType.SERVLET);
+		app.run(args);
 	}
 }
