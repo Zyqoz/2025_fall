@@ -135,8 +135,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
     // Configuration is handled through annotations
     // Bean configuration commented out temporarily to avoid conflicts
-    
-    
+    /* 
     @Bean
     public io.swagger.v3.oas.models.OpenAPI customOpenAPI() {
         return new io.swagger.v3.oas.models.OpenAPI()
@@ -148,5 +147,6 @@ public class OpenApiConfig {
                 .url("http://localhost:8080")
                 .description("Development Server"));
     }
+                */
     
 }
